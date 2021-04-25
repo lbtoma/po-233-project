@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import firebase from "firebase";
-import { Box, InputGroup, Input, Button, Center } from "@chakra-ui/react";
+import { InputGroup, Input, Button, Center } from "@chakra-ui/react";
 import { useWithLoading } from "../contexts/LoadingStatus";
+import RoundedBox from "./shared/RoundedBox";
 
 export interface LoginProps {
   userSetter: React.Dispatch<firebase.User>;
@@ -26,7 +27,7 @@ const Login: React.FC<LoginProps> = ({ userSetter }) => {
   });
 
   return (
-    <Box p="30px" borderWidth="1px" borderRadius="lg">
+    <RoundedBox>
       <InputGroup display="block">
         <Input
           my={inputsMargin}
@@ -46,7 +47,7 @@ const Login: React.FC<LoginProps> = ({ userSetter }) => {
           Login
         </Button>
       </Center>
-    </Box>
+    </RoundedBox>
   );
 };
 

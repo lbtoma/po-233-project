@@ -6,6 +6,7 @@ import {
   LoadingStatusProvider,
   useWithLoading,
 } from "./contexts/LoadingStatus";
+import Classification from "./components/Classification";
 
 firebase.initializeApp({
   apiKey: "AIzaSyAz-zriNYH4vtV03zOv7srx3bYUTZr1ytw",
@@ -51,9 +52,9 @@ export const App: FC = () => {
   return (
     <ChakraProvider colorModeManager={colorModeManager}>
       <LoadingStatusProvider>
-        <Center position="relative" top="50%" transform="translateY(-50%)">
+        <Center position="relative" my="80px">
           {firebaseUser ? (
-            <h1>Autenticado</h1>
+            <Classification />
           ) : (
             displayLogin && <Login userSetter={setFirebaseUser} />
           )}
