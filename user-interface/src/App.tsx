@@ -1,5 +1,11 @@
 import React, { useState, FC, useEffect } from "react";
 import firebase from "firebase";
+import { ChakraProvider, Center, StorageManager } from "@chakra-ui/react";
+import Login from "./components/Login";
+import {
+  LoadingStatusProvider,
+  useWithLoading,
+} from "./contexts/LoadingStatus";
 
 firebase.initializeApp({
   apiKey: "AIzaSyAz-zriNYH4vtV03zOv7srx3bYUTZr1ytw",
@@ -16,27 +22,43 @@ export const App: FC = () => {
   const [firebaseUser, setFirebaseUser] = useState<firebase.User | null>(null);
   const [displayLogin, setDisplayLogin] = useState<boolean>(false);
 
-  useEffect(() => {
-    auth()
-      .setPersistence(auth.Auth.Persistence.LOCAL)
-      .then(() => {
+  const setUser = useWithLoading(
+    async (): Promise<void> =>
+      new Promise<void>(async (resolve) => {
+        await auth().setPersistence(auth.Auth.Persistence.LOCAL);
         auth().onAuthStateChanged((user) => {
           if (user) {
             setFirebaseUser(user);
+            resolve();
           } else {
             setDisplayLogin(true);
+            resolve();
           }
         });
-      });
-  }, []);
+      })
+  );
+
+  const colorModeManager: StorageManager = {
+    get: () => "dark",
+    set: () => {},
+    type: "localStorage",
+  };
+
+  useEffect(() => {
+    setUser();
+  }, [setUser]);
 
   return (
-    <div>
-      {firebaseUser && <h1>Autenticado</h1>}
-      {!firebaseUser && displayLogin
-        ? <h1>Login</h1>
-        : <h1>Carregando...</h1>
-      }
-    </div>
+    <ChakraProvider colorModeManager={colorModeManager}>
+      <LoadingStatusProvider>
+        <Center position="relative" top="50%" transform="translateY(-50%)">
+          {firebaseUser ? (
+            <h1>Autenticado</h1>
+          ) : (
+            displayLogin && <Login userSetter={setFirebaseUser} />
+          )}
+        </Center>
+      </LoadingStatusProvider>
+    </ChakraProvider>
   );
 };
