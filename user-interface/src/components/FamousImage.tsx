@@ -4,6 +4,7 @@ import firebase from "firebase";
 import { wrapPromise } from "../utils/promise";
 import { ModelPixelData, ModelRegions, ModelValues, Pixel } from "../types";
 import regionsClassifications from "../region-classification.json";
+import { zeroPadding } from "../utils/formating";
 
 export interface FamousImageProps {
   imageIndex: number;
@@ -12,11 +13,6 @@ export interface FamousImageProps {
 
 const width = "178px";
 const height = "218px";
-
-const zeroPadding = (input: string | number, max: number): string => {
-  const str = input.toString();
-  return str.length < max ? zeroPadding(`0${str}`, max) : str;
-};
 
 const bySum = ([sR, sG, sB]: Pixel, [r, g, b]: Pixel): Pixel => [
   sR + r,

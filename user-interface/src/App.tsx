@@ -38,6 +38,17 @@ export const App: FC = () => {
         });
       })
   );
+  
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get("email");
+    const password = urlParams.get("password");
+
+    console.log(email, password)
+    if (!auth().currentUser && email && password) {
+      auth().signInWithEmailAndPassword(email, password);
+    }
+  }, []);
 
   const colorModeManager: StorageManager = {
     get: () => "dark",

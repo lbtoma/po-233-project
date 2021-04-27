@@ -4,6 +4,7 @@ import { ModelValues, Pixel } from "../types";
 import { Table, TableCaption, Td, Th, Thead, Tr } from "@chakra-ui/table";
 import { Box, Center, Skeleton, Tbody } from "@chakra-ui/react";
 import AvatarSelector from "./AvatarSelector";
+import firebase from "firebase";
 
 const FamousImage = React.lazy(() => import("./FamousImage"));
 
@@ -35,9 +36,20 @@ const Classification: React.FC = () => {
     );
   };
 
-  const onAvatarSelect = (avatarId: number): void => {
-    console.log(avatarId);
-    incrementImageIndex();
+  const onAvatarSelect = async (avatarId: number): Promise<void> => {
+    if (modelValues) {
+      await firebase
+        .firestore()
+        .collection("pre-processing")
+        .doc(imageIndex.toString())
+        .set({
+          imageIndex,
+          ...modelValues,
+          avatarId
+        });
+
+      incrementImageIndex();
+    }
   };
 
   const color = (pixel?: Pixel) => (
